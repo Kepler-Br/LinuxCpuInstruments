@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>533</width>
+    <width>573</width>
     <height>366</height>
    </rect>
   </property>
@@ -42,7 +42,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="coreUsageTab">
        <property name="sizePolicy">
@@ -83,8 +83,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>527</width>
-             <height>293</height>
+             <width>561</width>
+             <height>276</height>
             </rect>
            </property>
            <layout class="QFormLayout" name="formLayout"/>
@@ -404,13 +404,13 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>533</width>
-     <height>20</height>
+     <width>573</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Fi&amp;le</string>
     </property>
     <addaction name="actionSave_configuration"/>
     <addaction name="actionSave_configuration_as"/>
@@ -423,22 +423,22 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSave_configuration">
    <property name="text">
-    <string>Save configuration</string>
+    <string>&amp;Save configuration</string>
    </property>
   </action>
   <action name="actionOpen_configuration">
    <property name="text">
-    <string>Open configuration...</string>
+    <string>&amp;Open configuration...</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>&amp;Exit</string>
    </property>
   </action>
   <action name="actionSave_configuration_as">
    <property name="text">
-    <string>Save configuration as...</string>
+    <string>Save &amp;configuration as...</string>
    </property>
   </action>
  </widget>

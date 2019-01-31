@@ -20,9 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :
     interfaceUpdateTimer = new QTimer(this);
     connect(interfaceUpdateTimer, SIGNAL(timeout()), this, SLOT(updateInterface()));
     interfaceUpdateTimer->start(1000);
+    // If user is not root then disable buttons for set action.
     if(getuid() != 0)
     {
-        QMessageBox::warning(this, "Not root.", "You should be root to change logic core status.");
+        QMessageBox::warning(nullptr, "Not root.", "You should be root to change logic core status.");
         ui->button_ApplyAll->setEnabled(false);
         ui->button_applyCurrent->setEnabled(false);
     }
