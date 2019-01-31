@@ -17,9 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
     initDetailedTab();
     initParametersTab();
     updateParametersTab();
+
+    // Set time when we will read information from CPU pseudofiles.
     interfaceUpdateTimer = new QTimer(this);
     connect(interfaceUpdateTimer, SIGNAL(timeout()), this, SLOT(updateInterface()));
     interfaceUpdateTimer->start(1000);
+
     // If user is not root then disable buttons for set action.
     if(getuid() != 0)
     {
@@ -181,18 +184,25 @@ void MainWindow::on_listWidget_parameterTab_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_button_applyCurrent_clicked()
 {
+    // Get information from widgets.
     int selectedCore = ui->listWidget_parameterTab->currentRow();
     LogicCore *core = this->logicCores[selectedCore];
     int maxSliderValue = ui->sliderMaxFreq->maximum();
-    int maxValue = ui->sliderMaxFreq->value()/maxSliderValue;
-    int minValue = ui->sliderMinFreq->value()/maxSliderValue;
+    // Normalized slider values [0; 1].
+    int maxNormalizedValue = ui->sliderMaxFreq->value()/maxSliderValue;
+    int minNormalizedValue = ui->sliderMinFreq->value()/maxSliderValue;
     bool isOnline = ui->checkBox_coreOnline->isChecked();
 
+    // Apply information from widgets to logic core.
     core->setOnline(isOnline);
     int maxHardFreq = int(core->getMaxCoreFrequence());
     int minHardFreq = int(core->getMinCoreFrequence());
-    uint maxScalingFreq = uint((maxHardFreq-minHardFreq)*maxValue+minHardFreq);
-    uint minScalingFreq = uint((minHardFreq-minHardFreq)*minValue+minHardFreq);
+    // Calculate scaling frequence(it's complicated):
+    //First, we get delta from maximum and minimum possible hardware frequence (maxHardFreq-minHardFreq);
+    //Second, multiply result with normalized value from slider, so we will not exceed hardware bounds;
+    //Third, add minimum possible hardware frequence.
+    uint maxScalingFreq = uint((maxHardFreq-minHardFreq)*maxNormalizedValue+minHardFreq);
+    uint minScalingFreq = uint((minHardFreq-minHardFreq)*minNormalizedValue+minHardFreq);
     core->setScalingMaxFrequence(maxScalingFreq);
     core->setScalingMinFrequence(minScalingFreq);
 }
@@ -200,16 +210,21 @@ void MainWindow::on_button_applyCurrent_clicked()
 void MainWindow::on_button_ApplyAll_clicked()
 {
     int maxSliderValue = ui->sliderMaxFreq->maximum();
-    int maxValue = ui->sliderMaxFreq->value()/maxSliderValue;
-    int minValue = ui->sliderMinFreq->value()/maxSliderValue;
+    // Get normalized value [0; 1].
+    int maxNormalizedValue = ui->sliderMaxFreq->value()/maxSliderValue;
+    int minNormalizedValue = ui->sliderMinFreq->value()/maxSliderValue;
     bool isOnline = ui->checkBox_coreOnline->isChecked();
 
     for(auto* core: logicCores)
     {
         int maxHardFreq = int(core->getMaxCoreFrequence());
         int minHardFreq = int(core->getMinCoreFrequence());
-        uint maxScalingFreq = uint(maxHardFreq*maxValue);
-        uint minScalingFreq = uint(minHardFreq*minValue);
+        // Calculate scaling frequence(it's complicated):
+        //First, we get delta from maximum and minimum possible hardware frequence (maxHardFreq-minHardFreq);
+        //Second, multiply result with normalized value from slider, so we will not exceed hardware bounds;
+        //Third, add minimum possible hardware frequence.
+        uint maxScalingFreq = uint((maxHardFreq-minHardFreq)*maxNormalizedValue+minHardFreq);
+        uint minScalingFreq = uint((minHardFreq-minHardFreq)*minNormalizedValue+minHardFreq);
         core->setOnline(isOnline);
         core->setScalingMaxFrequence(maxScalingFreq);
         core->setScalingMinFrequence(minScalingFreq);
