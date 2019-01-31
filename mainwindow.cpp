@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         QMessageBox::warning(nullptr, "Not root.", "You should be root to change logic core status.");
         ui->button_ApplyAll->setEnabled(false);
-//        ui->button_applyCurrent->setEnabled(false);
+        ui->button_applyCurrent->setEnabled(false);
     }
 }
 
@@ -192,9 +192,7 @@ void MainWindow::on_button_applyCurrent_clicked()
     int maxNormalizedValue = ui->sliderMaxFreq->value()/maxSliderValue;
     int minNormalizedValue = ui->sliderMinFreq->value()/maxSliderValue;
     bool isOnline = ui->checkBox_coreOnline->isChecked();
-    // Get governor name from combobox.
-    int test = ui->comboBox_governors->currentIndex();
-    QString governor = ui->comboBox_governors->itemData(1).toString();
+    QString governor = ui->comboBox_governors->currentText();
 
     // Apply information from widgets to logic core.
     core->setOnline(isOnline);
@@ -218,6 +216,7 @@ void MainWindow::on_button_ApplyAll_clicked()
     int maxNormalizedValue = ui->sliderMaxFreq->value()/maxSliderValue;
     int minNormalizedValue = ui->sliderMinFreq->value()/maxSliderValue;
     bool isOnline = ui->checkBox_coreOnline->isChecked();
+    QString governor = ui->comboBox_governors->currentText();
 
     for(auto* core: logicCores)
     {
@@ -232,5 +231,6 @@ void MainWindow::on_button_ApplyAll_clicked()
         core->setOnline(isOnline);
         core->setScalingMaxFrequence(maxScalingFreq);
         core->setScalingMinFrequence(minScalingFreq);
+        core->setGovernor(governor);
     }
 }
